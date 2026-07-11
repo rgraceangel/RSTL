@@ -15,7 +15,7 @@ export interface QuizOption {
  */
 export function parseQuizOptions(options: Json): QuizOption[] {
   if (!Array.isArray(options)) return [];
-  return options.filter(
+  return (options as unknown[]).filter(
     (option): option is QuizOption =>
       typeof option === "object" &&
       option !== null &&
