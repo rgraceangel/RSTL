@@ -117,4 +117,21 @@ export interface PublicQuizQuestion {
  * One random question for `gameId`, read from `game_questions_public` --
  * never the raw `game_questions` table, which is admin-only precisely
  * because it carries `correct_answer`. Answer checking happens entirely
- * server-side v
+ * server-side via the `check_quiz_answer` RPC (`lib/actions/quiz.ts`), so
+ * this function never needs to (and structurally cannot) see the answer
+ * key either. `image_url` (from `game_images` via the view) and `category`
+ * are what let Decoder/Name It to Win It render an image-driven challenge
+ * through the exact same `QuizChallenge` component as a text quiz.
+ */
+export async function getRandomQuestionForGame(gameId: string): Promise<PublicQuizQuestion | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("game_questions_public")
+    .select("id, question_text, question_type, options, points, time_limit_seconds, category, image_url")
+    .eq("game_id", gameId);
+
+  const rows = data ?? [];
+  if (rows.length === 0) return null;
+
+  return rows[Math.floor(Math.random() * rows.length)];
+}
