@@ -1,13 +1,18 @@
 "use client";
 
 import { createContext, useEffect, useState } from "react";
-import type { Session, SupabaseClient } from "@supabase/supabase-js";
+import type { Session } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import type { Database } from "@/types/supabase";
 
+// Derived directly from createClient()'s own return type rather than
+// re-declaring `SupabaseClient<Database>` by hand -- this avoids a
+// structural mismatch when @supabase/supabase-js's own generic defaults
+// shift between semver-range installs (the two independently-written
+// SupabaseClient<Database> instantiations can otherwise be seen by
+// TypeScript as incompatible types even though they're the same client).
 type SupabaseContextValue = {
-  supabase: SupabaseClient<Database>;
+  supabase: ReturnType<typeof createClient>;
   session: Session | null;
 };
 
