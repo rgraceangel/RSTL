@@ -271,4 +271,12 @@ export async function confirmImportQuestionsAction(
     order_index: startingOrderIndex + index,
   }));
 
-  const { error } = await supabase.from("game_questions").insert(inse
+  const { error } = await supabase.from("game_questions").insert(inserts);
+
+  if (error) {
+    return { error: "Could not import these questions. Please try again." };
+  }
+
+  revalidatePath(`/admin/games/${gameId}/questions`);
+  redirect(`/admin/games/${gameId}/questions`);
+}

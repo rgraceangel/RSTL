@@ -412,4 +412,97 @@ export interface Database {
         };
         Relationships: [];
       };
- 
+    };
+    Functions: {
+      record_admin_login: {
+        Args: Record<string, never>;
+        Returns: undefined;
+      };
+      move_game_question: {
+        Args: { p_question_id: string; p_direction: string };
+        Returns: undefined;
+      };
+      check_quiz_answer: {
+        Args: { p_question_id: string; p_submitted_answer: string };
+        Returns: {
+          is_correct: boolean;
+          correct_answer: string;
+          question_type: string;
+          explanation: string | null;
+          points: number;
+        }[];
+      };
+      claim_prize_win: {
+        Args: { p_winner_record_id: string; p_player_name: string; p_player_contact: string };
+        Returns: undefined;
+      };
+      get_games_played_summary: {
+        Args: Record<string, never>;
+        Returns: {
+          total_sessions: number;
+          completed_sessions: number;
+          in_progress_sessions: number;
+          abandoned_sessions: number;
+          sessions_today: number;
+          sessions_last_7_days: number;
+        }[];
+      };
+      get_answer_accuracy_summary: {
+        Args: Record<string, never>;
+        Returns: {
+          correct_answers: number;
+          incorrect_answers: number;
+          accuracy_rate: number;
+        }[];
+      };
+      get_prize_claim_summary: {
+        Args: Record<string, never>;
+        Returns: {
+          total_won: number;
+          claimed: number;
+          pending: number;
+          expired: number;
+          cancelled: number;
+          claim_rate: number;
+        }[];
+      };
+      get_prize_inventory_report: {
+        Args: Record<string, never>;
+        Returns: {
+          prize_id: string;
+          prize_name: string;
+          prize_type: PrizeType;
+          is_active: boolean;
+          quantity_total: number;
+          quantity_awarded: number;
+          quantity_available: number;
+          low_stock_threshold: number;
+        }[];
+      };
+      get_most_popular_games: {
+        Args: { p_limit?: number };
+        Returns: {
+          game_id: string;
+          game_name: string;
+          game_type: GameType;
+          sessions_count: number;
+          win_count: number;
+        }[];
+      };
+      get_daily_participation: {
+        Args: { p_days?: number };
+        Returns: {
+          day: string;
+          sessions_count: number;
+          completed_count: number;
+          winners_count: number;
+        }[];
+      };
+      restock_prize: {
+        Args: { p_prize_id: string; p_amount: number };
+        Returns: { quantity_total: number }[];
+      };
+    };
+    Enums: Record<string, never>;
+  };
+}

@@ -95,4 +95,17 @@ export function csvRowToQuestionCandidate(
   }
 
   const points = Number.parseInt(row.points ?? "", 10);
-  const timeLimit = Number.parseInt(
+  const timeLimit = Number.parseInt(row.time_limit_seconds ?? "", 10);
+
+  return {
+    question_text: row.question_text ?? "",
+    question_type,
+    options,
+    correct_answer,
+    explanation: row.explanation ?? "",
+    points: Number.isFinite(points) ? points : 10,
+    time_limit_seconds: Number.isFinite(timeLimit) ? timeLimit : defaultTimeLimitSeconds,
+    image_url: "",
+    category: (row.category ?? "").trim(),
+  };
+}

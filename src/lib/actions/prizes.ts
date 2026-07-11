@@ -153,4 +153,9 @@ export async function restockPrizeAction(
       return { error: "No inventory record found for this prize." };
     }
     return { error: "Could not restock this prize." };
-  
+  }
+
+  revalidatePath("/admin/prizes");
+  revalidatePath(`/admin/prizes/${prizeId}`);
+  return {};
+}

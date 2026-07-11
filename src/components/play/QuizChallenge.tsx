@@ -112,4 +112,36 @@ export function QuizChallenge({ question, onSubmit, submitting }: QuizChallengeP
 
       {question.question_type === "true_false" && (
         <div className="grid w-full grid-cols-2 gap-3">
-          {(["tr
+          {(["true", "false"] as const).map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setSelected(value)}
+              disabled={submitting}
+              className={cn(
+                "rounded-lg border px-4 py-3 text-sm font-semibold capitalize transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                selected === value ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-muted"
+              )}
+            >
+              {value}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {question.question_type === "text" && (
+        <Input
+          value={textAnswer}
+          onChange={(event) => setTextAnswer(event.target.value)}
+          placeholder="Type your answer"
+          disabled={submitting}
+          className="w-full"
+        />
+      )}
+
+      <Button onClick={handleManualSubmit} disabled={submitting || !canSubmit} size="lg">
+        {submitting ? "Checking..." : "Submit Answer"}
+      </Button>
+    </div>
+  );
+}

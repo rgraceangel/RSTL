@@ -226,3 +226,47 @@ export function GameEngine({ game, prizeSegments }: GameEngineProps) {
         {stage === "prize" && sessionId && (
           <motion.div key="prize" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <PrizeStage sessionId={sessionId} segments={prizeSegments} onWon={handleWon} />
+          </motion.div>
+        )}
+
+        {stage === "claim" && wonPrize && (
+          <motion.div key="claim" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <ClaimForm
+              winnerRecordId={wonPrize.winnerRecordId}
+              prizeName={wonPrize.prizeName}
+              onClaimed={() => setStage("thanks")}
+            />
+          </motion.div>
+        )}
+
+        {stage === "thanks" && wonPrize && (
+          <motion.div key="thanks" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <ThankYouScreen prizeName={wonPrize.prizeName} onPlayAgain={handlePlayAgain} />
+          </motion.div>
+        )}
+
+        {(stage === "error" || stage === "exhausted") && (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center gap-3 text-center"
+          >
+            <div
+              className={
+                "flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium " +
+                (stage === "exhausted" ? "bg-amber-500/10 text-amber-600" : "bg-red-500/10 text-red-600")
+              }
+            >
+              <XCircle className="h-4 w-4" />
+              {errorMessage ?? "Something went wrong."}
+            </div>
+            <a href="/" className="text-sm font-medium text-primary underline underline-offset-4">
+              Back to home
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

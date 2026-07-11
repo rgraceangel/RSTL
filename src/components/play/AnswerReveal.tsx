@@ -69,4 +69,6 @@ export function AnswerReveal({
           </>
         )}
       </div>
-    <
+    </motion.div>
+  );
+}

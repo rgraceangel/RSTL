@@ -55,4 +55,19 @@ export const gameSchema = z
       if (!data.additional_config) return true;
       try {
         const parsed = JSON.parse(data.additional_config);
-        return typeof parsed === "object" && parsed !=
+        return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+      } catch {
+        return false;
+      }
+    },
+    { message: "Additional config must be valid JSON (an object)", path: ["additional_config"] }
+  )
+  .refine(
+    (data) => {
+      if (!data.start_date || !data.end_date) return true;
+      return new Date(data.end_date).getTime() > new Date(data.start_date).getTime();
+    },
+    { message: "End date must be after the start date", path: ["end_date"] }
+  );
+
+export type GameFormValues = z.infer<typeof gameSchema>;

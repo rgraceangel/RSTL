@@ -135,4 +135,11 @@ export function GamePreview({ game, questions }: GamePreviewProps) {
                 {question.explanation && (
                   <p className="mt-3 text-xs text-muted-foreground">{question.explanation}</p>
                 )}
-              </li
+              </li>
+            );
+          })}
+        </ol>
+      )}
+    </div>
+  );
+}

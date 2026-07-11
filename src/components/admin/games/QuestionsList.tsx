@@ -132,4 +132,10 @@ export function QuestionsList({ gameId, questions }: { gameId: string; questions
                   </Button>
                 )}
               </div>
-            
+            </RoleGate>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}

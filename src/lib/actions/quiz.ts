@@ -89,4 +89,20 @@ export async function submitQuizAnswerAction(
     await supabase
       .from("game_sessions")
       .update({ status: "completed", score: 0, answer_correct: false })
-      .eq("id",
+      .eq("id", sessionId)
+      .eq("status", "in_progress");
+  } else {
+    await supabase
+      .from("game_sessions")
+      .update({ answer_correct: true })
+      .eq("id", sessionId)
+      .eq("status", "in_progress");
+  }
+
+  return {
+    correct: result.is_correct,
+    correctAnswer: result.correct_answer,
+    explanation: result.explanation,
+    pointsAwarded: result.is_correct ? result.points : 0,
+  };
+}

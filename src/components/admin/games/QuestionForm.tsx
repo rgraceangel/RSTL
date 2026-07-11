@@ -249,4 +249,26 @@ export function QuestionForm({ question, defaultTimeLimitSeconds, onSubmit }: Qu
           {errors.points && <p className="text-xs text-red-600">{errors.points.message}</p>}
         </div>
         <div className="space-y-1.5">
-          
+          <Label htmlFor="time_limit_seconds">Timer (seconds)</Label>
+          <Input
+            id="time_limit_seconds"
+            type="number"
+            min="5"
+            step="1"
+            disabled={isPending}
+            aria-invalid={!!errors.time_limit_seconds}
+            {...register("time_limit_seconds")}
+          />
+          {errors.time_limit_seconds && (
+            <p className="text-xs text-red-600">{errors.time_limit_seconds.message}</p>
+          )}
+        </div>
+      </div>
+
+      <Button type="submit" className="gap-2" disabled={isPending}>
+        {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+        {isEditing ? "Save changes" : "Add question"}
+      </Button>
+    </form>
+  );
+}

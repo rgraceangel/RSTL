@@ -257,4 +257,8 @@ export async function listGameQuestionsForPreview(gameId: string): Promise<GameQ
     const image = imageByQuestion.get(q.id);
     return {
       ...q,
-      image_url: image?.image
+      image_url: image?.image_url ?? null,
+      image_id: image?.id ?? null,
+    };
+  });
+}

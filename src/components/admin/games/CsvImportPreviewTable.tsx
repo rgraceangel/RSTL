@@ -40,4 +40,15 @@ export function CsvImportPreviewTable({ rows }: { rows: CsvPreviewRow[] }) {
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 text-red-600" title={row.error ?? ""}>
-                  
+                    <XCircle className="h-3.5 w-3.5" />
+                    {row.error}
+                  </span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
