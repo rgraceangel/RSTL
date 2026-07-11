@@ -100,7 +100,7 @@ export function WinnerCreateForm({ sessions, prizes }: WinnerCreateFormProps) {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Recording a win deducts one unit from the prize's inventory immediately, and the prize is
+        Recording a win deducts one unit from the prize&apos;s inventory immediately, and the prize is
         automatically marked unavailable if that was the last unit.
       </p>
 

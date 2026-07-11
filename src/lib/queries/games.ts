@@ -232,7 +232,7 @@ export async function listGameLevelImages(gameId: string): Promise<GameImageItem
 }
 
 /** Full question set for a game, ordered -- used by the read-only preview. */
-export interface GameQuestionWithImage extends GameQuestionDetail {}
+export type GameQuestionWithImage = GameQuestionDetail;
 
 export async function listGameQuestionsForPreview(gameId: string): Promise<GameQuestionWithImage[]> {
   const supabase = await createClient();

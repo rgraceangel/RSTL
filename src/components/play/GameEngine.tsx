@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { XCircle } from "lucide-react";
 import { GameIntro } from "@/components/play/GameIntro";
@@ -192,7 +193,7 @@ export function GameEngine({ game, prizeSegments }: GameEngineProps) {
           >
             <h1 className="text-2xl font-semibold">{game.name}</h1>
             <p className="max-w-md text-muted-foreground">
-              This game type doesn't have a player experience built yet -- check back soon.
+              This game type doesn&apos;t have a player experience built yet -- check back soon.
             </p>
           </motion.div>
         )}
@@ -261,9 +262,9 @@ export function GameEngine({ game, prizeSegments }: GameEngineProps) {
               <XCircle className="h-4 w-4" />
               {errorMessage ?? "Something went wrong."}
             </div>
-            <a href="/" className="text-sm font-medium text-primary underline underline-offset-4">
+            <Link href="/" className="text-sm font-medium text-primary underline underline-offset-4">
               Back to home
-            </a>
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>

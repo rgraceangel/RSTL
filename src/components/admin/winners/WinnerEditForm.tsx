@@ -83,7 +83,7 @@ export function WinnerEditForm({ winner }: { winner: WinnerDetail }) {
         </Select>
         <p className="text-xs text-muted-foreground">
           Moving to Claimed or Cancelled stamps the corresponding timestamp automatically.
-          Cancelling also returns one unit to the prize's inventory.
+          Cancelling also returns one unit to the prize&apos;s inventory.
         </p>
       </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { PartyPopper, RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -35,9 +36,9 @@ export function ThankYouScreen({ prizeName, onPlayAgain }: ThankYouScreenProps) 
         Play Again
       </Button>
 
-      <a href="/" className="text-sm font-medium text-primary underline underline-offset-4">
+      <Link href="/" className="text-sm font-medium text-primary underline underline-offset-4">
         Back to home
-      </a>
+      </Link>
     </motion.div>
   );
 }
