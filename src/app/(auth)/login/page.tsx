@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 };
 
 interface LoginPageProps {
-  searchParams: Promise<{ redirect?: string; error?: string }>;
+  searchParams: Promise<{ redirect?: string; error?: string; reset?: string }>;
 }
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -17,6 +17,10 @@ const ERROR_MESSAGES: Record<string, string> = {
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const initialError = params.error ? ERROR_MESSAGES[params.error] : undefined;
+  const initialSuccess =
+    params.reset === "success" ? "Your password has been updated. Sign in below." : undefined;
 
-  return <LoginForm redirectTo={params.redirect} initialError={initialError} />;
+  return (
+    <LoginForm redirectTo={params.redirect} initialError={initialError} initialSuccess={initialSuccess} />
+  );
 }

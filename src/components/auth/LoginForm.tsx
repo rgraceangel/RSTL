@@ -1,23 +1,27 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { AlertCircle, Loader2, LogIn, Eye, EyeOff } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, LogIn, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 import { loginAction } from "@/lib/auth/actions";
 import { loginSchema, type LoginFormValues } from "@/lib/validations/auth";
+import { RESET_PASSWORD_PATH } from "@/constants";
 
 interface LoginFormProps {
   redirectTo?: string;
   initialError?: string;
+  initialSuccess?: string;
 }
 
-export function LoginForm({ redirectTo, initialError }: LoginFormProps) {
+export function LoginForm({ redirectTo, initialError, initialSuccess }: LoginFormProps) {
   const [serverError, setServerError] = useState<string | undefined>(initialError);
+  const [successMessage] = useState<string | undefined>(initialSuccess);
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -54,6 +58,16 @@ export function LoginForm({ redirectTo, initialError }: LoginFormProps) {
         </p>
       </div>
 
+      {successMessage && !serverError && (
+        <div
+          role="status"
+          className="mb-4 flex items-start gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700"
+        >
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>{successMessage}</span>
+        </div>
+      )}
+
       {serverError && (
         <div
           role="alert"
@@ -82,7 +96,16 @@ export function LoginForm({ redirectTo, initialError }: LoginFormProps) {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="password">Password</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">Password</Label>
+            <Link
+              href={RESET_PASSWORD_PATH}
+              className="text-xs font-medium text-primary hover:underline"
+              tabIndex={-1}
+            >
+              Forgot password?
+            </Link>
+          </div>
           <div className="relative">
             <Input
               id="password"

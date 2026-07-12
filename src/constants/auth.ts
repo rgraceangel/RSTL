@@ -17,3 +17,4 @@ export const ROLE_BADGE_STYLES: Record<AdminRole, string> = {
 
 export const LOGIN_REDIRECT_DEFAULT = "/admin";
 export const LOGIN_PATH = "/login";
+export const RESET_PASSWORD_PATH = "/reset-password";

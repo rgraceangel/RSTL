@@ -2,8 +2,15 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { loginSchema, type LoginFormValues } from "@/lib/validations/auth";
-import { LOGIN_PATH, LOGIN_REDIRECT_DEFAULT } from "@/constants";
+import {
+  loginSchema,
+  requestPasswordResetSchema,
+  confirmPasswordResetSchema,
+  type LoginFormValues,
+  type RequestPasswordResetValues,
+  type ConfirmPasswordResetValues,
+} from "@/lib/validations/auth";
+import { LOGIN_PATH, LOGIN_REDIRECT_DEFAULT, RESET_PASSWORD_PATH } from "@/constants";
 
 export interface LoginActionResult {
   error?: string;
@@ -70,4 +77,72 @@ export async function logoutAction(): Promise<void> {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect(LOGIN_PATH);
+}
+
+export interface PasswordResetResult {
+  error?: string;
+  success?: boolean;
+}
+
+/**
+ * Sends a password recovery email whose link redirects into
+ * `RESET_PASSWORD_PATH` (rather than Supabase's project-wide default Site
+ * URL) -- that page is the one built to actually read the recovery
+ * session out of the URL and let the admin set a new password. Always
+ * returns `success: true` regardless of whether the address is a real
+ * admin account, so this can never be used to enumerate valid emails.
+ */
+export async function requestPasswordResetAction(
+  values: RequestPasswordResetValues
+): Promise<PasswordResetResult> {
+  const parsed = requestPasswordResetSchema.safeParse(values);
+  if (!parsed.success) {
+    return { error: "Enter a valid email address." };
+  }
+
+  const supabase = await createClient();
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+
+  await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+    redirectTo: `${siteUrl}${RESET_PASSWORD_PATH}`,
+  });
+
+  return { success: true };
+}
+
+/**
+ * Sets a new password for whoever currently holds the recovery session
+ * established client-side (see `ResetPasswordForm`, which exchanges the
+ * URL's access/refresh tokens via `supabase.auth.setSession` before this
+ * runs). Signs that temporary session out afterward so the admin logs in
+ * fresh through the normal `loginAction` path -- keeping the admins-table
+ * role check as the single source of truth for "authorized," exactly as
+ * for a normal sign-in.
+ */
+export async function confirmPasswordResetAction(
+  values: ConfirmPasswordResetValues
+): Promise<PasswordResetResult> {
+  const parsed = confirmPasswordResetSchema.safeParse(values);
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Check the highlighted fields and try again." };
+  }
+
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "This reset link is invalid or has expired. Request a new one." };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+
+  if (error) {
+    return { error: "Could not update your password. Please try again." };
+  }
+
+  await supabase.auth.signOut();
+  redirect(`${LOGIN_PATH}?reset=success`);
 }
