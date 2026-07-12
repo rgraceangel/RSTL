@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export type StatCardTone = "default" | "warning" | "success";
@@ -15,7 +15,15 @@ const TONE_STYLES: Record<StatCardTone, string> = {
 interface StatCardProps {
   label: string;
   value: string | number;
-  icon: LucideIcon;
+  /**
+   * A rendered icon element (e.g. `<Gamepad2 className="h-4 w-4" />`), not a
+   * bare component reference. Server Component pages that render this client
+   * component must pass already-rendered JSX here -- passing a raw
+   * lucide-react component reference across the server/client boundary
+   * trips React's "Functions cannot be passed directly to Client Components"
+   * error, since an unrendered component isn't serializable.
+   */
+  icon: ReactNode;
   description?: string;
   tone?: StatCardTone;
   index?: number;
@@ -24,7 +32,7 @@ interface StatCardProps {
 export function StatCard({
   label,
   value,
-  icon: Icon,
+  icon,
   description,
   tone = "default",
   index = 0,
@@ -38,8 +46,8 @@ export function StatCard({
     >
       <div className="flex items-start justify-between">
         <p className="text-sm text-muted-foreground">{label}</p>
-        <span className={cn("rounded-md p-2", TONE_STYLES[tone])}>
-          <Icon className="h-4 w-4" />
+        <span className={cn("rounded-md p-2 [&_svg]:h-4 [&_svg]:w-4", TONE_STYLES[tone])}>
+          {icon}
         </span>
       </div>
       <p className="mt-3 text-2xl font-semibold tracking-tight">{value}</p>

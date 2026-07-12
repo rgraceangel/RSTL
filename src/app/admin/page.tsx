@@ -64,28 +64,28 @@ export default async function AdminDashboardPage() {
             label="Active Games"
             value={stats.activeGames}
             description={`${stats.totalGames} total`}
-            icon={Gamepad2}
+            icon={<Gamepad2 className="h-4 w-4" />}
           />
           <StatCard
             index={1}
             label="Sessions Today"
             value={stats.sessionsToday}
             description={`${stats.totalSessions} all time`}
-            icon={Trophy}
+            icon={<Trophy className="h-4 w-4" />}
           />
           <StatCard
             index={2}
             label="Prizes Won Today"
             value={stats.winnersToday}
             description={`${stats.totalWinners} all time`}
-            icon={Gift}
+            icon={<Gift className="h-4 w-4" />}
           />
           <StatCard
             index={3}
             label="Low Stock Prizes"
             value={stats.lowStockPrizes}
             description={`${stats.totalPrizes} prizes total`}
-            icon={AlertTriangle}
+            icon={<AlertTriangle className="h-4 w-4" />}
             tone={stats.lowStockPrizes > 0 ? "warning" : "default"}
           />
         </div>
@@ -101,14 +101,14 @@ export default async function AdminDashboardPage() {
             label="Completed Sessions"
             value={stats.completedSessions}
             description="All time"
-            icon={BarChart3}
+            icon={<BarChart3 className="h-4 w-4" />}
           />
           <StatCard
             index={5}
             label="Win Rate"
             value={`${stats.winRate}%`}
             description="Wins / completed sessions"
-            icon={Percent}
+            icon={<Percent className="h-4 w-4" />}
             tone="success"
           />
           <StatCard
@@ -119,14 +119,14 @@ export default async function AdminDashboardPage() {
               currency: "USD",
             })}
             description="All time, non-cancelled wins"
-            icon={Coins}
+            icon={<Coins className="h-4 w-4" />}
           />
           <StatCard
             index={7}
             label="Average Score"
             value={stats.averageScore}
             description="Completed sessions"
-            icon={TrendingUp}
+            icon={<TrendingUp className="h-4 w-4" />}
           />
         </div>
       </section>

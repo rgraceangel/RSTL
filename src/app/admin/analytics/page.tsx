@@ -72,14 +72,14 @@ export default async function AnalyticsPage() {
             label="Games Played"
             value={gamesPlayed.totalSessions}
             description={`${gamesPlayed.completedSessions} completed · ${gamesPlayed.sessionsToday} today`}
-            icon={Gamepad2}
+            icon={<Gamepad2 className="h-4 w-4" />}
           />
           <StatCard
             index={1}
             label="Correct Answers"
             value={accuracy.correctAnswers}
             description={`${accuracy.accuracyRate}% accuracy rate`}
-            icon={CheckCircle2}
+            icon={<CheckCircle2 className="h-4 w-4" />}
             tone="success"
           />
           <StatCard
@@ -87,7 +87,7 @@ export default async function AnalyticsPage() {
             label="Incorrect Answers"
             value={accuracy.incorrectAnswers}
             description={`${accuracy.correctAnswers + accuracy.incorrectAnswers} total answered`}
-            icon={XCircle}
+            icon={<XCircle className="h-4 w-4" />}
             tone={accuracy.incorrectAnswers > 0 ? "warning" : "default"}
           />
           <StatCard
@@ -95,7 +95,7 @@ export default async function AnalyticsPage() {
             label="Prizes Claimed"
             value={claims.claimed}
             description={`${claims.claimRate}% of ${claims.totalWon} won`}
-            icon={Gift}
+            icon={<Gift className="h-4 w-4" />}
             tone="success"
           />
           <StatCard
@@ -103,7 +103,7 @@ export default async function AnalyticsPage() {
             label="Pending Claims"
             value={claims.pending}
             description="Won, not yet claimed"
-            icon={Clock}
+            icon={<Clock className="h-4 w-4" />}
             tone={claims.pending > 0 ? "warning" : "default"}
           />
           <StatCard
@@ -111,14 +111,14 @@ export default async function AnalyticsPage() {
             label="Most Popular Game"
             value={topGame?.gameName ?? "—"}
             description={topGame ? `${topGame.sessionsCount} sessions played` : "No sessions yet"}
-            icon={Flame}
+            icon={<Flame className="h-4 w-4" />}
           />
           <StatCard
             index={6}
             label="Low Stock Prizes"
             value={lowStockCount}
             description="Active prizes at or below threshold"
-            icon={AlertTriangle}
+            icon={<AlertTriangle className="h-4 w-4" />}
             tone={lowStockCount > 0 ? "warning" : "default"}
           />
           <StatCard
@@ -126,7 +126,7 @@ export default async function AnalyticsPage() {
             label="Sessions, Last 7 Days"
             value={gamesPlayed.sessionsLast7Days}
             description="Trailing week"
-            icon={Calendar}
+            icon={<Calendar className="h-4 w-4" />}
           />
         </div>
       </section>
