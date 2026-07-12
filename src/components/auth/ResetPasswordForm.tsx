@@ -21,22 +21,47 @@ import { LOGIN_PATH } from "@/constants";
 
 type Phase = "loading" | "request" | "sent" | "confirm" | "expired";
 
+interface AuthRedirectParams {
+  code?: string;
+  access_token?: string;
+  refresh_token?: string;
+  error_description?: string;
+}
+
 /**
- * Reads the Supabase recovery session Supabase's own redirect appends as a
- * URL hash fragment (`#access_token=...&refresh_token=...&type=recovery`,
- * or `#error=...&error_code=otp_expired` if the link was already used,
- * previewed by an email client's link scanner, or genuinely expired).
- * Hash fragments never reach the server, so this has to run client-side --
- * there is no server component or middleware that can see this at all.
+ * Reads whatever Supabase's own redirect appended to this page after the
+ * admin clicks the recovery link. Two different shapes are possible
+ * depending on the auth flow Supabase decides to use for the client that
+ * originally called `resetPasswordForEmail`:
+ *
+ *  - PKCE (the default for `@supabase/ssr`, which both our browser and
+ *    server Supabase clients use): a `?code=...` query param, redeemed via
+ *    `exchangeCodeForSession`. Errors (already-used/expired links) also
+ *    land as query params (`?error=...&error_code=...&error_description=`).
+ *  - Implicit grant (older/legacy flow): `#access_token=...&refresh_token=
+ *    ...&type=recovery` as a URL *hash* fragment, redeemed via `setSession`.
+ *    Errors land as `#error=...&error_code=...&error_description=...`.
+ *
+ * Hash fragments never reach the server, so all of this has to run
+ * client-side -- there is no server component or middleware that can see
+ * either shape. We check both so this keeps working regardless of which
+ * flow Supabase/`@supabase/ssr` uses now or in the future.
  */
-function parseHash(): { access_token?: string; refresh_token?: string; error_description?: string } {
+function parseAuthRedirect(): AuthRedirectParams {
   if (typeof window === "undefined") return {};
-  const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
-  const params = new URLSearchParams(hash);
+
+  const search = new URLSearchParams(window.location.search);
+  const hash = new URLSearchParams(
+    window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash
+  );
+
+  const errorDescription = search.get("error_description") ?? hash.get("error_description");
+
   return {
-    access_token: params.get("access_token") ?? undefined,
-    refresh_token: params.get("refresh_token") ?? undefined,
-    error_description: params.get("error_description") ?? undefined,
+    code: search.get("code") ?? undefined,
+    access_token: hash.get("access_token") ?? undefined,
+    refresh_token: hash.get("refresh_token") ?? undefined,
+    error_description: errorDescription ?? undefined,
   };
 }
 
@@ -58,20 +83,34 @@ export function ResetPasswordForm() {
   });
 
   useEffect(() => {
-    const { access_token, refresh_token, error_description } = parseHash();
+    const { code, access_token, refresh_token, error_description } = parseAuthRedirect();
+    const clearUrl = () => window.history.replaceState(null, "", window.location.pathname);
 
     if (error_description) {
       setExpiredReason(decodeURIComponent(error_description.replace(/\+/g, " ")));
       setPhase("expired");
-      // Strip the hash so a refresh doesn't re-trigger the same error state.
-      window.history.replaceState(null, "", window.location.pathname);
+      clearUrl();
+      return;
+    }
+
+    if (code) {
+      const supabase = createClient();
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        clearUrl();
+        if (error) {
+          setExpiredReason("This reset link is invalid or has expired.");
+          setPhase("expired");
+        } else {
+          setPhase("confirm");
+        }
+      });
       return;
     }
 
     if (access_token && refresh_token) {
       const supabase = createClient();
       supabase.auth.setSession({ access_token, refresh_token }).then(({ error }) => {
-        window.history.replaceState(null, "", window.location.pathname);
+        clearUrl();
         if (error) {
           setExpiredReason("This reset link is invalid or has expired.");
           setPhase("expired");
