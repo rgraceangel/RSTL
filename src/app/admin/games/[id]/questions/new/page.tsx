@@ -45,7 +45,7 @@ export default async function NewQuestionPage({ params }: NewQuestionPageProps) 
 
       <QuestionForm
         defaultTimeLimitSeconds={defaultTimeLimit}
-        onSubmit={(values) => createQuestionAction(id, values)}
+        onSubmit={createQuestionAction.bind(null, id)}
       />
     </div>
   );

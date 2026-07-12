@@ -46,7 +46,7 @@ export default async function EditQuestionPage({ params }: EditQuestionPageProps
       <QuestionForm
         question={question}
         defaultTimeLimitSeconds={defaultTimeLimit}
-        onSubmit={(values) => updateQuestionAction(id, questionId, values)}
+        onSubmit={updateQuestionAction.bind(null, id, questionId)}
       />
     </div>
   );

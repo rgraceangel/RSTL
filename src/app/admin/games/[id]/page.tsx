@@ -57,7 +57,7 @@ export default async function EditGamePage({ params }: EditGamePageProps) {
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           Details
         </h2>
-        <GameForm game={game} onSubmit={(values) => updateGameAction(id, values)} />
+        <GameForm game={game} onSubmit={updateGameAction.bind(null, id)} />
       </section>
 
       <section>
